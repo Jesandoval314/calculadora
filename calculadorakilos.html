@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Semanal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Kilos Semanales</h1>
+        <div class="input-group">
+            <label for="lunes">Lunes:</label>
+            <input type="number" id="lunes" placeholder="Ej: 2.5" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="martes">Martes:</label>
+            <input type="number" id="martes" placeholder="Ej: 3.0" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="miercoles">Miércoles:</label>
+            <input type="number" id="miercoles" placeholder="Ej: 1.8" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="jueves">Jueves:</label>
+            <input type="number" id="jueves" placeholder="Ej: 4.2" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="viernes">Viernes:</label>
+            <input type="number" id="viernes" placeholder="Ej: 3.3" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="sabado">Sábado:</label>
+            <input type="number" id="sabado" placeholder="Ej: 2.1" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="valorKilo">Valor del kilo:</label>
+            <input type="number" id="valorKilo" placeholder="Ej: 15.5" step="0.01">
+        </div>
+        <button class="btn" onclick="calcularTotal()">Calcular</button>
+        <button class="btn" onclick="guardarExcel()">Guardar en Excel</button>
+        <div class="result" id="resultado"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script>
+        function calcularTotal() {
+            const lunes = parseFloat(document.getElementById('lunes').value) || 0;
+            const martes = parseFloat(document.getElementById('martes').value) || 0;
+            const miercoles = parseFloat(document.getElementById('miercoles').value) || 0;
+            const jueves = parseFloat(document.getElementById('jueves').value) || 0;
+            const viernes = parseFloat(document.getElementById('viernes').value) || 0;
+            const sabado = parseFloat(document.getElementById('sabado').value) || 0;
+            const valorKilo = parseFloat(document.getElementById('valorKilo').value);
+
+            if (isNaN(valorKilo)) {
+                document.getElementById('resultado').textContent = 'Por favor, ingresa un valor del kilo válido.';
+                return;
+            }
+
+            const totalKilos = lunes + martes + miercoles + jueves + viernes + sabado;
+            const totalValor = totalKilos * valorKilo;
+
+            document.getElementById('resultado').textContent = `Total de kilos: ${totalKilos.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kg, Valor total: $${totalValor.toLocaleString('es-ES', { maximumFractionDigits: 0 })}`;
+        }
+
+        function guardarExcel() {
+            const lunes = parseFloat(document.getElementById('lunes').value) || 0;
+            const martes = parseFloat(document.getElementById('martes').value) || 0;
+            const miercoles = parseFloat(document.getElementById('miercoles').value) || 0;
+            const jueves = parseFloat(document.getElementById('jueves').value) || 0;
+            const viernes = parseFloat(document.getElementById('viernes').value) || 0;
+            const sabado = parseFloat(document.getElementById('sabado').value) || 0;
+            const valorKilo = parseFloat(document.getElementById('valorKilo').value) || 0;
+
+            const totalKilos = lunes + martes + miercoles + jueves + viernes + sabado;
+            const totalValor = totalKilos * valorKilo;
+
+            const data = [
+                ['Día', 'Kilos'],
+                ['Lunes', lunes],
+                ['Martes', martes],
+                ['Miércoles', miercoles],
+                ['Jueves', jueves],
+                ['Viernes', viernes],
+                ['Sábado', sabado],
+                ['Total Kilos', totalKilos],
+                ['Valor del Kilo', valorKilo],
+                ['Valor Total', totalValor.toLocaleString('es-ES', { maximumFractionDigits: 0 })]
+            ];
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Inventario Semanal');
+
+            XLSX.writeFile(wb, 'Inventario_Semanal.xlsx');
+        }
+    </script>
+</body>
+</html>
+
+
+
+
